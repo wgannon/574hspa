@@ -1,0 +1,4 @@
+CREATE TABLE hspa
+(HPSA_ID double precision, HPSA_Discipline_Class varchar(24), HPSA_Score integer, Primary_State_Abbreviation varchar(6),HPSA_Status varchar(16), 
+HPSA_Designation_Date timestamp NOT NULL, 
+
