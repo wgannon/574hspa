@@ -1,4 +1,52 @@
-CREATE TABLE hspa
-(HPSA_ID double precision, HPSA_Discipline_Class varchar(24), HPSA_Score integer, Primary_State_Abbreviation varchar(6),HPSA_Status varchar(16), 
-HPSA_Designation_Date timestamp NOT NULL, 
+-- create table
 
+CREATE TABLE hspa
+(HPSA_ID double precision, 
+HPSA_Name varchar(54),
+HPSA_Discipline_Class varchar(24), 
+HPSA_Score integer, 
+Primary_State_Abbreviation varchar(6),
+HPSA_Status varchar(16), 
+HPSA_Designation_Date timestamp NOT NULL,
+Withdrawn_Date timestamp,
+County_Name varchar(54),
+HPSA_Population_Type varchar(24),
+%of_Population_Below_100%_Poverty double precision,
+the_geom geometry,
+
+--THIS PORTION COPIED FROM https://www.kevfoo.com/2012/01/Importing-CSV-to-PostGIS/
+CONSTRAINT HPSA_KEY PRIMARY KEY (HSPA_ID),  
+CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
+CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),
+CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4326)
+);
+
+
+-- Index: HSPA_the_geom_gist
+
+--DROP INDEX HSPA_the_geom_gist
+
+
+CREATE INDEX HSPA_the_geom_gist
+  ON HPSA_Name
+  USING gist
+  (the_geom );
+  
+  --copy to the table 
+  \copy HSPA_Name(HPSA_Name,HPSA_ID,Designation_Type,HPSA_Discipline_Class,HPSA_Score,Primary_State_Abbreviation,HPSA_Status,HPSA_Designation_Date,Withdrawn_Date,County_Name,HPSA_Population_Type,%of_Population_Below_100%_Poverty,Longitude,Latitude) FROM '/local/path/////.csv' DELIMITERS ',' CSV HEADER;
+
+--Creating Second Table
+CREATE TABLE stateExpansion
+(Location	varchar(24),
+Primary_State_Abbreviation varcahr(8),
+Current_Status_of_Medicaid_Expansion_Decision	varchar(16),
+Date_Implemented	timestamp,
+Date_of_other_expansion_1	timestamp,
+Implimented	BOOLEAN,
+Source_Footnotes varchar(64),
+
+CONSTRAINT stateKey PRIMARY KEY (Location)
+);
+
+  --copy to second table 
+  
