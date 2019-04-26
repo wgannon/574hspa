@@ -49,4 +49,5 @@ CONSTRAINT stateKey PRIMARY KEY (Location)
 );
 
   --copy to second table 
+\copy Location(Location, Primary_State_Abbreviation,Current_Status_of_Medicaid_Expansion_Decision, Date_Implemented, Implimented, Source_Footnotes) FROM '/local/path/////.csv' DELIMITERS ',' CSV HEADER;
   
